@@ -1,7 +1,7 @@
 <!--The content below is only a placeholder and can be replaced.-->
   <div class="row" style="margin: 2% 10%">
     <div class="col-md-12">
-       <form formGroup="formGroup">
+       <form [formGroup]="formulario" (submit)="saveEmployee($event)">
             <div class="form-group">
               <label for="exampleInputEmail1">Usuário</label>
               <input type="text" class="form-control" formControlName="nome" id="user" aria-describedby="emailHelp">
@@ -10,7 +10,7 @@
               <label for="exampleInputPassword1">Empresa</label>
               <input type="text" class="form-control" formControlName="company" id="company">
             </div>
-            <button type="submit" (confirm)="saveEmployee(formGroup.value)" class="btn btn-primary">Salvar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!formulario.valid">Salvar</button>
       </form>
     </div>
   </div>

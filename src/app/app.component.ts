@@ -12,11 +12,16 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms"
 export class AppComponent {
   title = 'firestoreApp';
   private db: any;
-  private formGroup: FormGroup;
+  private formulario: FormGroup;
 
   constructor(private formBuilder: FormBuilder) {
       firebase.initializeApp(FirebaseConfig.firebase);
       this.db = firebase.firestore();
+
+      this.formulario = this.formBuilder.group({
+        nome: ["", [Validators.required]],
+        company: ["", [Validators.required]]
+      })
 
       //adicionando um usuário.
       // this.db.collection('usuarios').doc().set({
@@ -37,18 +42,30 @@ export class AppComponent {
             });
       }).catch((err) => console.log(err));
 
-      this.formGroup = this.formBuilder.group({
-        nome: ['', [Validators.required]],
-        company: ['', [Validators.required]]
-      })
+      //delete company
+      this.db.collection('empresas').where('nome', '==', 'b/300')
+          .get().then((snapshot) => {
+            snapshot.forEach((doc) => {
+              this.db.collection('empresas').doc(doc.id).delete()
+                  .then(() => console.log('company b/300 deleted'))
+                  .catch(err => console.log(err))
+            });
+          })
+          .catch(err => {
+            console.log('falha ao deletar');
+            console.log(err);
+          });
   }
 
-  public saveEmployee(){
-      // this.db.colletion('usuarios').doc().set({
-      //   nome: this.formGroup.controls['nome'].value,
-      //   company: this.formGroup.controls['company'].value
-      // });
-  debugger;    console.log(this.formGroup.controls['nome'].value)
-      console.log(this.formGroup.controls['company'].value)
+  public saveEmployeeAndCompany(e){
+        e.preventDefault();
+        // this.db.colletion('usuarios').doc().set({
+        //   nome: this.formGroup.controls['nome'].value
+        // });
+        // this.db.collection('empresas').doc().set({
+        //   company: this.formGroup.controls['company'].value
+        // });
+        console.log(this.formulario.controls['nome'].value);
+        console.log(this.formulario.controls['company'].value);
   }
 }
