@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import * as firebase from "firebase";
 import { FirebaseConfig } from "../environments/firebase.config"
 import { FormGroup, FormBuilder, Validators } from "@angular/forms"
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 
 @Component({
@@ -13,25 +15,18 @@ export class AppComponent {
   title = 'firestoreApp';
   private db: any;
   private formulario: FormGroup;
+  private dataUser: Array<any> = [];
 
   constructor(private formBuilder: FormBuilder) {
       firebase.initializeApp(FirebaseConfig.firebase);
       this.db = firebase.firestore();
+      this.getCompanyAndEmployeers();
 
       this.formulario = this.formBuilder.group({
         nome: ["", [Validators.required]],
-        company: ["", [Validators.required]]
+        company: ["", [Validators.required]],
+        telefone: ["", [Validators.required]]
       })
-
-      //adicionando um usuário.
-      // this.db.collection('usuarios').doc().set({
-      //   nome: 'vinicius',
-      //   telefone: '62982269272'
-      // });
-
-      // this.db.collection('empresas').doc().set({
-      //   nome: 'b/300'
-      // });
 
       this.db.collection('usuarios').where('nome','==', 'marcos')
           .get().then((snapshot) => {
@@ -59,13 +54,27 @@ export class AppComponent {
 
   public saveEmployeeAndCompany(e){
         e.preventDefault();
-        // this.db.colletion('usuarios').doc().set({
-        //   nome: this.formGroup.controls['nome'].value
-        // });
-        // this.db.collection('empresas').doc().set({
-        //   company: this.formGroup.controls['company'].value
-        // });
-        console.log(this.formulario.controls['nome'].value);
-        console.log(this.formulario.controls['company'].value);
+        this.db.collection('usuarios').doc().set({
+          nome: this.formulario.controls['nome'].value,
+          telefone: this.formulario.controls['telefone'].value
+        });
+        this.db.collection('empresas').doc().set({
+          company: this.formulario.controls['company'].value
+        });
   }
+
+  private getCompanyAndEmployeers() {
+    this.db.collection('empresas_usuarios').get().then((snapshot) => {
+      snapshot.forEach(doc => {
+         let data = doc.data();
+         console.log(doc.id, "=>" , doc.data())
+         this.showData(doc.data());
+      });
+    });
+  }
+
+  private showData(data) {
+    //this.db.collection(data.usuario.id)
+  }
+
 }
