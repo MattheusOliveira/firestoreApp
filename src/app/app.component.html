@@ -1,7 +1,7 @@
 <!--The content below is only a placeholder and can be replaced.-->
   <div class="row" style="margin: 2% 10%">
     <div class="col-md-12">
-       <form [formGroup]="formulario" (submit)="saveEmployeeAndCompany($event)">
+       <form [formGroup]="formulario" (submit)="submitEmployeeAndCompany($event)">
             <div class="form-group">
               <label for="exampleInputEmail1">Usuário:</label>
               <input type="text" class="form-control" formControlName="nome" id="user">
@@ -31,9 +31,12 @@
       <tfoot>
       </tfoot>
       <tbody>
-        <tr>
-          <td></td>
-          <td></td>
+        <tr *ngFor="let user of dataUser">
+          <td>{{user.nome}}</td>
+          <td>{{user.empresa}}</td>
+          <td>{{user.telefone}}</td>
+          <td><button type="button" class="btn btn-danger" (click)="removeEmployee(user)"
+             name="button">remover</button></td>
         </tr>
       </tbody>
     </table>
